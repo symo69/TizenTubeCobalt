@@ -180,10 +180,14 @@ void JNI_StarboardBridge_SetYoutubeCertificationScope(
     const JavaParamRef<jstring>& certScope) {
   // TODO(b/492704919): enable on AOSP when the layering violation is fixed.
 #if !BUILDFLAG(IS_PARTNER_TOOLCHAIN)
+  const std::string cert_scope = ConvertJavaStringToUTF8(env, certScope);
+  if (cert_scope.empty()) {
+    return;
+  }
   auto header_value_provider =
       cobalt::browser::CobaltHeaderValueProvider::GetInstance();
   header_value_provider->SetHeaderValue(
-      kYoutubeCertScopeHeader, ConvertJavaStringToUTF8(env, certScope));
+      kYoutubeCertScopeHeader, cert_scope);
 #endif  // !BUILDFLAG(IS_PARTNER_TOOLCHAIN)
 }
 
